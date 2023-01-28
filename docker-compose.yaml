@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  fastapi_app:
+    build:
+      context: ./backend
+    image: fastapi_app:latest
+    ports:
+      - target: 8000
+        published: 8000
+    volumes:
+      - type: bind
+        source: ./backend/app
+        target: /app
+    networks:
+      - websocket
+
+  angular:
+    image: node:18.13.0-alpine
+    working_dir: /frontend
+    ports:
+      - target: 4200
+        published: 4200
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /frontend
+    networks:
+      - websocket
+    command: npm start
+
+networks:
+  websocket:
+    name: websocket
+    driver: bridge
